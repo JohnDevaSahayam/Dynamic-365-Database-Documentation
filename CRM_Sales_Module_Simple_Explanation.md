@@ -1,305 +1,284 @@
-# CRM Sales Module - Simple Explanation Document
-
-**For**: Team Lead and Manager Review  
-**Date**: January 2026
+# CRM Sales Module
+## Simple Explanation - Data Structure & Data Flow
 
 ---
 
-This document explains our CRM Sales Module database in simple, easy-to-understand terms.
+## 1. What is This CRM System?
+
+This CRM system tracks our entire sales process - from finding a potential customer to getting paid.
+
+**In simple words:**
+- It stores who our customers are
+- It tracks every sale we work on
+- It shows where each deal stands
+- It calculates money amounts
 
 ---
 
-## 1. System Overview
+## 2. Data Structure
 
-### What is this CRM System?
+### Main Entities (The Core Tables)
 
-Our CRM (Customer Relationship Management) system is a database that helps our sales team manage the complete sales process - from first contact with a potential customer all the way through getting paid.
-
-**In simple terms:**
-- It tracks who our customers are (Accounts, Contacts)
-- It tracks potential customers (Leads)
-- It manages the sales process (Opportunities, Quotes, Orders, Invoices)
-- It stores product information and pricing
-- It controls who can see and edit data (Security)
-
-The system follows a standard sales flow:
-
-```
-Lead → Qualification → Opportunity → Quote → Order → Invoice → Close
-```
+| Entity | What It Is | Key Purpose |
+|--------|------------|-------------|
+| **Account** | Company | A business we sell to |
+| **Contact** | Person | Someone at a company |
+| **Lead** | Potential Customer | Someone interested but not qualified yet |
+| **Opportunity** | Active Sale | A deal we're working on |
+| **Quote** | Price Proposal | Formal pricing we send to customer |
+| **SalesOrder** | Confirmed Order | Customer agreed to buy |
+| **Invoice** | Bill | Request for payment |
 
 ---
-
-## 2. Data Structure Explanation
-
-### Main Business Entities
-
-Our CRM has 7 main entities that handle the sales process:
-
-| Entity | Purpose | What it Represents |
-|--------|---------|-------------------|
-| **Account** | Customer Company | A business/organization we sell to |
-| **Contact** | Individual Person | A person at a company (decision maker, buyer) |
-| **Lead** | Potential Customer | Someone interested in our products but not yet qualified |
-| **Opportunity** | Active Sale | A qualified sales opportunity we're working on |
-| **Quote** | Price Proposal | Formal pricing we sent to customer |
-| **SalesOrder** | Customer Order | Confirmed purchase order |
-| **Invoice** | Payment Request | Bill sent to customer for payment |
 
 ### Supporting Entities
 
-These support the main entities:
-
 | Entity | Purpose |
 |--------|---------|
-| **Product** | Items we sell (products and services) |
-| **PriceList** | Pricing rules for products |
-| **OpportunityProduct** | Products added to an opportunity (line items) |
-| **QuoteDetail** | Products added to a quote (line items) |
-| **OrderDetail** | Products added to an order (line items) |
-| **InvoiceDetail** | Products added to an invoice (line items) |
+| **Product** | Things we sell |
+| **PriceList** | Pricing rules |
+| **OpportunityProduct** | Products in an opportunity |
+| **QuoteDetail** | Products in a quote |
+| **OrderDetail** | Products in an order |
+| **InvoiceDetail** | Products in an invoice |
+
+---
 
 ### Security Entities
 
-These control who can access what:
-
 | Entity | Purpose |
 |--------|---------|
-| **User** | People who use the system |
-| **Role** | Defines what users can do (permissions) |
-| **BusinessUnit** | Organizes users into teams/departments |
-
-### What Each Main Entity Contains
-
-**ACCOUNT (Companies)**
-- Company name, address, phone, website
-- Industry classification
-- Revenue, employee count
-- Credit limit
-- Primary contact person
-
-**CONTACT (People)**
-- First name, last name, email, phone
-- Job title, department
-- Associated company (Account)
-
-**LEAD (Potential Customer)**
-- Name, company, contact information
-- Interest level (rating)
-- Source of lead (campaign, referral, etc.)
-- Estimated budget
-
-**OPPORTUNITY (Active Sale)**
-- Customer (Account or Contact)
-- Estimated value (how much we might sell)
-- Probability of winning
-- Expected close date
-- Sales stage (New → In Progress → Won/Lost)
-
-**QUOTE (Price Proposal)**
-- Customer and pricing
-- Products and quantities
-- Discounts and total amount
-- Valid until date
-
-**SALES ORDER (Confirmed Order)**
-- Customer and order details
-- Products and quantities
-- Shipping information
-- Status (New → Fulfilled → Invoiced → Paid)
-
-**INVOICE (Bill)**
-- Customer and amount due
-- Payment terms
-- Due date
-- Payment status (Paid/Unpaid)
+| **SystemUser** | People who use the system |
+| **Role** | What users can do |
+| **BusinessUnit** | Teams/departments |
 
 ---
 
-## 3. Relationship Explanation
+## 3. Entity Details
 
-### How Tables Connect
+### ACCOUNT
+- **Purpose**: Stores company information
+- **Required Field**: Name
+- **Key Fields**: Industry, Revenue, CreditLimit, Phone, Email
+- **Links to**: Contacts, Opportunities, Quotes, Orders, Invoices
 
-Tables are connected using **relationships**. Think of it like a family tree - some things "belong to" other things.
+### CONTACT
+- **Purpose**: Stores person information
+- **Required Field**: LastName
+- **Key Fields**: FirstName, Email, Phone, JobTitle
+- **Links to**: Account (works at which company)
+
+### LEAD
+- **Purpose**: New potential customer
+- **Required Field**: Subject
+- **Key Fields**: CompanyName, Email, Rating (Hot/Warm/Cold), Budget
+- **Status**: Open → Qualified → Disqualified
+- **Links to**: Account, Contact, Opportunity (when qualified)
+
+### OPPORTUNITY
+- **Purpose**: Active sales deal we're working on
+- **Required Field**: Name, Customer
+- **Key Fields**: EstimatedValue, CloseProbability, ExpectedCloseDate
+- **Status**: Open → Won OR Lost
+- **Links to**: Customer (Account/Contact), Products, Quotes, Order, Invoice
+
+### QUOTE
+- **Purpose**: Formal price proposal
+- **Required Field**: Customer
+- **Key Fields**: TotalAmount, Discount, ExpiresOn
+- **Status**: Open → Won (accepted) → Lost (declined)
+- **Links to**: Opportunity, Products (line items), Order (when won)
+
+### SALES ORDER
+- **Purpose**: Confirmed customer purchase
+- **Required Field**: Customer
+- **Key Fields**: TotalAmount, RequestDeliveryBy, Status
+- **Status**: New → Fulfilled → Invoiced → Paid
+- **Links to**: Quote, Products (line items), Invoice
+
+### INVOICE
+- **Purpose**: Bill to collect payment
+- **Required Field**: Customer
+- **Key Fields**: TotalAmount, DueDate, PaidOn
+- **Status**: Active → Paid
+- **Links to**: Order, Products (line items)
+
+---
+
+## 4. How Tables Connect
 
 ### One-to-Many Relationships
 
-One record in a parent table can have many related records in a child table.
-
-**Example:**
-- One **Account** can have many **Contacts**
-- One **Opportunity** can have many **OpportunityProducts**
-- One **Quote** can have many **QuoteDetails** (line items)
-
 ```
 Account (1) ──────→ Many Contacts
-Opportunity (1) ──────→ Many OpportunityProducts
-Quote (1) ──────→ Many QuoteDetails
+Account (1) ──────→ Many Opportunities
+Opportunity (1) ──→ Many Products
+Quote (1) ────────→ Many Line Items
+Order (1) ────────→ Many Line Items
+Invoice (1) ──────→ Many Line Items
 ```
 
-### Why Use Relationships?
+### Foreign Keys (The Connections)
 
-Relationships help us:
-1. **Organize data** - Connect related records together
-2. **Find data quickly** - Link information across tables
-3. **Maintain accuracy** - Ensure we don't delete data that's being used
+A Foreign Key is a field that links to another table:
 
-### Foreign Keys - The Connection Point
-
-A **Foreign Key** is a field in one table that points to a record in another table.
-
-**Example:**
-- Contact table has a field called `ParentAccountId`
-- This points to which Account the Contact belongs to
-- This is how we know which company a person works for
+| Field | Links To | Example |
+|-------|----------|---------|
+| Contact.ParentAccountId | Account | Which company this person works for |
+| Opportunity.CustomerId | Account/Contact | Who we're selling to |
+| Quote.OpportunityId | Opportunity | Which deal this quote is for |
+| Order.QuoteId | Quote | Which quote became this order |
+| Invoice.OrderId | SalesOrder | Which order this invoice is for |
 
 ---
 
-## 4. Data Flow Explanation
+## 5. Data Flow (Step by Step)
 
-This is how a typical sale moves through our system:
+### The Sales Process
 
-### Step 1: LEAD (New Potential Customer)
 ```
-What's created: A Lead record
-What happens: Sales rep enters prospect information
-Data captured: Name, company, phone, email, interest level
-Status: Open, Attempted to Contact, Contacted
-```
-
-### Step 2: QUALIFICATION (Evaluating the Lead)
-```
-What's created: Lead is reviewed and evaluated
-What happens: Sales rep checks if prospect is serious
-Data updated: Rating, estimated budget, purchase timeframe
-Decision: Qualify or Disqualify the lead
-```
-
-### Step 3: OPPORTUNITY (Active Sales Deal)
-```
-What's created: Opportunity record (from qualified lead)
-What happens: We start actively pursuing the sale
-Data includes: Customer, estimated value, probability, expected close date
-Sales stages: New → In Progress → [Won or Lost]
-```
-
-### Step 4: QUOTE (Price Proposal)
-```
-What's created: Quote from Opportunity
-What happens: Sales rep prepares formal pricing
-Data includes: Products, quantities, prices, discounts
-Status: Draft → Active → Won (accepted) or Lost (declined)
-```
-
-### Step 5: SALES ORDER (Confirmed Purchase)
-```
-What's created: Sales Order from Quote (when won)
-What happens: Customer accepted the quote
-Data includes: Order details, shipping address, payment terms
-Status: New → Fulfilled → Invoiced → Paid
-```
-
-### Step 6: INVOICE (Payment Request)
-```
-What's created: Invoice from Sales Order
-What happens: Billing is generated
-Data includes: Amount due, payment terms, due date
-Status: New → Partial → Complete → Paid
-```
-
-### Step 7: CLOSE (Sale Complete)
-```
-What's created: Opportunity marked as Won
-What happens: Revenue is recorded
-Data updated: Actual value, actual close date
-Status: Closed - Sale is complete!
+Lead → Opportunity → Quote → Order → Invoice → Paid
 ```
 
 ---
 
-## 5. Validation & Control
+### Step 1: LEAD
 
-### Required Fields
+**What happens**: New potential customer enters system
 
-Certain fields MUST be filled in to save a record:
+**What's created**: Lead record
 
-| Entity | Required Fields |
-|--------|----------------|
-| Account | Name, Owner |
-| Contact | Last Name, Owner |
-| Lead | Subject, Owner |
-| Opportunity | Name, Customer, Owner |
-| Quote | Customer, Owner |
-| Order | Customer, Owner |
-| Invoice | Customer, Owner |
+**Data captured**: Name, Company, Phone, Email, Rating
 
-### Status Tracking (StateCode / StatusCode)
+**Status**: Open (New → Contacted → Qualified)
 
-Every record has a status to track where it is in its lifecycle:
+---
 
-**StateCode** = The main state (Active/Inactive)
+### Step 2: OPPORTUNITY
 
-**StatusCode** = The specific reason for the state
+**What happens**: Lead is qualified as real opportunity
 
-**Example - Opportunity:**
-| StateCode | Meaning | StatusCode | Meaning |
-|-----------|---------|------------|----------|
-| 0 (Open) | Still working | 1 = New, 2 = In Progress, 3 = On Hold |
-| 1 (Won) | We won! | 4 = Won |
-| 2 (Lost) | We lost | 5 = Lost, 6 = Cancelled |
+**What's created**: Opportunity record
 
-### Audit Fields - Who Changed What & When
+**Data added**: 
+- Link to Customer (Account/Contact)
+- Products they want to buy
+- Estimated value
+
+**Status**: Open (New → In Progress → Won/Lost)
+
+---
+
+### Step 3: QUOTE
+
+**What happens**: We prepare formal pricing
+
+**What's created**: Quote record
+
+**Data copied**: 
+- Customer details
+- Products from Opportunity
+- Pricing from PriceList
+- Discounts
+
+**Status**: Open → Won (accepted) or Lost (declined)
+
+---
+
+### Step 4: SALES ORDER
+
+**What happens**: Customer accepts quote
+
+**What's created**: Sales Order record
+
+**Data copied**: 
+- Everything from Quote
+- Shipping address
+- Payment terms
+
+**Status**: New → Fulfilled → Invoiced → Paid
+
+---
+
+### Step 5: INVOICE
+
+**What happens**: We create bill
+
+**What's created**: Invoice record
+
+**Data copied**: 
+- Everything from Order
+- Due date
+- Payment terms
+
+**Status**: Active → Paid
+
+---
+
+### Step 6: CLOSE (Sale Complete)
+
+**What happens**: Customer pays
+
+**What changes**:
+- Invoice marked as Paid
+- Opportunity marked as Won
+- Actual revenue recorded
+
+---
+
+## 6. Status Tracking
+
+Every record has a status to track progress:
+
+### Opportunity Status
+| StateCode | Meaning |
+|-----------|---------|
+| 0 (Open) | Still working |
+| 1 (Won) | Sale completed |
+| 2 (Lost) | Sale lost |
+
+### Quote Status
+| StateCode | Meaning |
+|-----------|---------|
+| 0 (Open) | Being prepared |
+| 1 (Won) | Customer accepted |
+| 2 (Lost) | Customer declined |
+
+### Order Status
+| StateCode | Meaning |
+|-----------|---------|
+| 0 (Active) | New/Pending |
+| 1 (Fulfilled) | Shipped |
+| 2 (Invoiced) | Invoice created |
+| 3 (Paid) | Payment received |
+
+---
+
+## 7. Audit Fields (Tracking Changes)
 
 Every record automatically tracks:
 
-| Field | What it Shows |
+| Field | What It Shows |
 |-------|---------------|
-| **CreatedOn** | When the record was first created |
-| **CreatedBy** | Who created the record |
-| **ModifiedOn** | When the record was last changed |
-| **ModifiedBy** | Who last changed the record |
-| **VersionNumber** | A counter that changes each time - helps detect conflicts |
-
-### Data Integrity
-
-**How we keep data accurate:**
-
-1. **Unique IDs** - Every record gets a unique identifier (like a fingerprint)
-2. **Required fields** - Can't save without essential information
-3. **Valid choices** - Dropdown fields only allow predefined options
-4. **Currency tracking** - Money fields store both original currency and base currency
-5. **Number tracking** - Version numbers prevent two people from overwriting each other's changes
+| CreatedOn | When record was created |
+| CreatedBy | Who created it |
+| ModifiedOn | When it was last changed |
+| ModifiedBy | Who changed it |
+| OwnerId | Who is responsible |
 
 ---
 
-## 6. Short Summary (For Meeting Speaking Notes)
+## 8. Meeting Summary (Ready to Speak)
 
-**Here's what you can say in a meeting:**
-
-> "Our CRM Sales Module is a database that manages our complete sales process - from lead to payment.
+> Module tracks our complete sales process "Our CRM Sales.
 >
-> It has 7 main areas: Accounts (companies), Contacts (people), Leads (potential customers), Opportunities (active deals), Quotes (price proposals), Orders (confirmed sales), and Invoices (bills).
+> We start with **Leads** (potential customers), qualify the good ones into **Opportunities** (active deals), create **Quotes** (price proposals), and when the customer accepts, we turn them into **Orders**. Then we send **Invoices** to get paid.
 >
-> The system tracks each sale as it moves through stages: Lead gets qualified, becomes an Opportunity, gets a Quote, which turns into an Order when won, then an Invoice is sent, and finally we mark it as Paid when we receive money.
+> Each table connects to the next through foreign keys - for example, an Invoice knows which Order it came from, which came from a Quote, which came from an Opportunity, which is for a specific Customer.
 >
-> Every record tracks who owns it, when it was created, and when it was last modified. Status fields show where each record is in its lifecycle.
+> Every record tracks who owns it, when it was created, and when it was modified. Status fields show where each deal stands in the process.
 >
-> The database connects all these pieces together - for example, an Invoice knows which Order it came from, which Order came from which Quote, which Quote came from which Opportunity, which Opportunity is for which Account and Contact.
->
-> In simple terms: This system tracks our customers and every sale we make from first contact to getting paid."
-
----
-
-## Quick Reference Card
-
-| Stage | Entity Created | Status |
-|-------|---------------|--------|
-| New prospect | Lead | Open |
-| Qualified | Opportunity | Open |
-| Pricing sent | Quote | Active |
-| Order received | Sales Order | Fulfilled |
-| Bill sent | Invoice | Active |
-| Payment received | Invoice | Paid |
+> In simple terms: This system makes sure we track every customer and every sale from start to finish."
 
 ---
 
