@@ -1,11 +1,6 @@
 # Microsoft Dynamics 365 CRM Sales Module
 ## Data Structure & Data Flow Technical Analysis
 
-**Document Classification**: Enterprise Architecture Technical Documentation  
-**Author**: Senior Microsoft Dynamics 365 CRM Architect & Dataverse Database Expert  
-**Database**: CRM_DB (SQL Server)  
-**Date**: January 2026
-
 ---
 
 ## Table of Contents

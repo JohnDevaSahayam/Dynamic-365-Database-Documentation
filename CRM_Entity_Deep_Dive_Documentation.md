@@ -1,9 +1,5 @@
 # Microsoft Dynamics 365 CRM - Deep Entity & Data Flow Technical Documentation
 
-## Document Information
-- **Database Name**: CANCRM_MSCRM
-- **Document Type**: Entity-Level Technical Architecture
-- **Focus**: Comprehensive Deep Dive per Entity
 
 ---
 

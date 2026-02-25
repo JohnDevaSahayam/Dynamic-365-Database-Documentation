@@ -1,13 +1,7 @@
 # Microsoft Dynamics 365 CRM Sales Module Database
 ## Technical Architecture & Data Flow Documentation
 
----
 
-**Author:** Microsoft Dynamics 365 CRM Sales Module Architect & Senior Database Analyst  
-**Database:** CANCRM_MSCRM  
-**Platform:** Microsoft SQL Server / Microsoft Dynamics 365 Dataverse  
-**Version:** 1.0  
-**Date:** February 2026
 
 ---
 

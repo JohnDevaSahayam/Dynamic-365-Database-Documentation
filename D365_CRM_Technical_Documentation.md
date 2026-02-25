@@ -1,11 +1,5 @@
         # Microsoft Dynamics 365 CRM Sales Module - Enterprise Technical Documentation
 
-## Document Information
-- **Version**: 1.0
-- **Date**: January 2026
-- **Platform**: Microsoft Dynamics 365 CRM / Dataverse
-- **Database**: SQL Server (CRM_DB)
-- **Classification**: Enterprise Technical Architecture
 
 ---
 

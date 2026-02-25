@@ -1,9 +1,6 @@
 is scr# CRM Sales Module
 ## Data Structure and Data Flow Explanation Document
 
-**For**: Team Lead and Manager Review  
-**Date**: January 2026
-
 ---
 
 ## 1. Introduction
