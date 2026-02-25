@@ -1,11 +1,6 @@
 # Microsoft Dynamics 365 CRM Sales Module
 ## Enterprise Mermaid Diagrams - Data Structure & Data Flow
 
-**Document Classification**: Enterprise Architecture Visual Documentation  
-**Author**: Senior Microsoft Dynamics 365 CRM Solution Architect & Dataverse Database Expert  
-**Database**: CRM_DB (SQL Server)  
-**Date**: January 2026
-
 ---
 
 ## SECTION 1 – Entity Relationship Diagram (ERD)
@@ -315,7 +310,7 @@ erDiagram
     
     CONTACT ||--o{ OPPORTUNITY : "associated"
     CONTACT ||--o{ LEAD : "qualifies"
-    CONTACT--o{ QU ||OTE : "receives"
+    CONTACT ||--o{ QUOTE : "receives"
     CONTACT ||--o{ SALESORDER : "purchases"
     CONTACT ||--o{ INVOICE : "receives"
     CONTACT }o--|| ACCOUNT : "belongs_to"
@@ -487,7 +482,7 @@ erDiagram
     ROLE ||--o{ USERROLE : "granted_to"
     ROLE ||--o{ ROLEPRIVILEGE : "contains"
     
-    PRIVILEGE ||--o{ ROLEPRILEGE : "assigned_via"
+    PRIVILEGE ||--o{ ROLEPRIVILEGE : "assigned_via"
     
     %% Polymorphic relationship for ownership
     ACCOUNT }o--|| OWNER : "owned_by"
@@ -576,15 +571,6 @@ erDiagram
         int StatusCode
     }
     
-    FAX {
-        uuid ActivityId PK
-        nvarchar Subject
-        nvarchar Description
-        nvarchar FaxNumber
-        int DirectionCode
-        int StatusCode
-    }
-    
     ANNOTATION {
         uuid AnnotationId PK
         nvarchar Subject
@@ -613,7 +599,6 @@ erDiagram
     PHONECALL |o--|| ACTIVITYPOINTER : "is_a"
     APPOINTMENT |o--|| ACTIVITYPOINTER : "is_a"
     LETTER |o--|| ACTIVITYPOINTER : "is_a"
-    FAX |o--|| ACTIVITYPOINTER : "is_a"
     
     ACTIVITYPOINTER ||--o{ ACTIVITYPARTY : "has_participants"
     ACTIVITYPOINTER }o--|| ACCOUNT : "regarding"
@@ -651,32 +636,11 @@ classDiagram
         +int StatusCode
         +uuid ParentAccountId FK
         +uuid PrimaryContactId FK
-        +uuid MasterId FK
-        +int IndustryCode
-        +int BusinessTypeCode
         +money Revenue
         +int NumberOfEmployees
         +nvarchar Telephone1
         +nvarchar EmailAddress1
-        +nvarchar WebsiteUrl
-        +int AccountRatingCode
-        +bit CreditOnHold
-        +uuid TerritoryId FK
-        +uuid DefaultPriceLevelId FK
-        +datetime CreatedOn
-        +uuid CreatedBy FK
-        +datetime ModifiedOn
-        +uuid ModifiedBy FK
-        +datetime CreatedOnBehalfBy
-        +datetime ModifiedOnBehalfBy
         +timestamp VersionNumber
-        +int ImportSequenceNumber
-        +datetime OverriddenCreatedOn
-        +int UTCConversionTimeZoneCode
-        +int TimeZoneRuleVersionNumber
-        +uuid ProcessId
-        +uuid StageId
-        +nvarchar TraversedPath
     }
     
     %% ==================== LEAD ENTITY ====================
@@ -696,22 +660,7 @@ classDiagram
         +int IndustryCode
         +int LeadSourceCode
         +int RatingCode
-        +uuid CampaignId FK
-        +uuid QualifyingOpportunityId FK
-        +uuid ParentAccountId FK
-        +uuid ParentContactId FK
-        +uuid OriginatingLeadId FK
-        +bit DoNotPhone
-        +bit DoNotEmail
-        +bit DoNotPostalMail
-        +datetime CreatedOn
-        +uuid CreatedBy FK
-        +datetime ModifiedOn
-        +uuid ModifiedBy FK
         +timestamp VersionNumber
-        +nvarchar TraversedPath
-        +uuid ProcessId
-        +uuid StageId
     }
     
     %% ==================== OPPORTUNITY ENTITY ====================
@@ -725,37 +674,16 @@ classDiagram
         +int StatusCode
         +uuid CustomerId
         +int CustomerIdType
-        +nvarchar CustomerIdName
         +uuid PriceLevelId FK
         +uuid TransactionCurrencyId FK
         +money EstimatedValue
-        +money EstimatedValue_Base
         +money ActualValue
-        +money ActualValue_Base
         +int CloseProbability
         +datetime EstimatedCloseDate
         +datetime ActualCloseDate
         +int SalesStageCode
-        +nvarchar SalesStage
-        +uuid CampaignId FK
-        +uuid OriginatingLeadId FK
         +money TotalAmount
-        +money TotalAmount_Base
-        +money DiscountAmount
-        +money DiscountPercentage
-        +money FreightAmount
-        +money TotalTax
-        +money TotalLineItemAmount
-        +money TotalDiscountAmount
-        +money TotalAmountLessFreight
-        +datetime CreatedOn
-        +uuid CreatedBy FK
-        +datetime ModifiedOn
-        +uuid ModifiedBy FK
         +timestamp VersionNumber
-        +nvarchar TraversedPath
-        +uuid ProcessId
-        +uuid StageId
     }
     
     %% ==================== QUOTE ENTITY ====================
@@ -775,22 +703,9 @@ classDiagram
         +uuid TransactionCurrencyId FK
         +uuid OpportunityId FK
         +money TotalAmount
-        +money TotalAmount_Base
-        +money DiscountAmount
-        +money DiscountPercentage
-        +money FreightAmount
-        +money TotalTax
-        +money TotalLineItemAmount
-        +money TotalDiscountAmount
-        +money TotalAmountLessFreight
         +datetime EffectiveFrom
         +datetime EffectiveTo
         +datetime ExpiresOn
-        +datetime RequestDeliveryBy
-        +datetime ClosedOn
-        +int ShippingMethodCode
-        +int PaymentTermsCode
-        +datetime CreatedOn
         +timestamp VersionNumber
     }
     
@@ -810,15 +725,8 @@ classDiagram
         +uuid OpportunityId FK
         +uuid QuoteId FK
         +money TotalAmount
-        +money TotalAmount_Base
-        +money DiscountAmount
-        +money FreightAmount
-        +money TotalTax
         +datetime RequestDeliveryBy
         +int SubmitStatus
-        +datetime SubmitDate
-        +datetime LastBackofficeSubmit
-        +datetime CreatedOn
         +timestamp VersionNumber
     }
     
@@ -838,15 +746,8 @@ classDiagram
         +uuid SalesOrderId FK
         +uuid OpportunityId FK
         +money TotalAmount
-        +money TotalAmount_Base
-        +money DiscountAmount
-        +money FreightAmount
-        +money TotalTax
         +int PaymentTermsCode
         +datetime DueDate
-        +datetime DateSent
-        +datetime PaidOn
-        +datetime CreatedOn
         +timestamp VersionNumber
     }
     
@@ -857,8 +758,6 @@ classDiagram
         +uuid CreatedBy
         +datetime ModifiedOn
         +uuid ModifiedBy
-        +datetime CreatedOnBehalfBy
-        +datetime ModifiedOnBehalfBy
         +timestamp VersionNumber
     }
     
@@ -875,126 +774,30 @@ classDiagram
         +int StatusCode
     }
     
-    class AuditAttributes {
-        <<mixin>>
-        +int ImportSequenceNumber
-        +datetime OverriddenCreatedOn
-        +int UTCConversionTimeZoneCode
-        +int TimeZoneRuleVersionNumber
-    }
-    
-    class BPFAttributes {
-        <<mixin>>
-        +uuid ProcessId
-        +uuid StageId
-        +nvarchar TraversedPath
-    }
-    
     %% Apply mixins
     AccountBase ..|> SystemAttributes
     AccountBase ..|> OwnershipAttributes
     AccountBase ..|> StateManagementAttributes
-    AccountBase ..|> AuditAttributes
-    AccountBase ..|> BPFAttributes
     
     LeadBase ..|> SystemAttributes
     LeadBase ..|> OwnershipAttributes
     LeadBase ..|> StateManagementAttributes
-    LeadBase ..|> AuditAttributes
-    LeadBase ..|> BPFAttributes
     
     OpportunityBase ..|> SystemAttributes
     OpportunityBase ..|> OwnershipAttributes
     OpportunityBase ..|> StateManagementAttributes
-    OpportunityBase ..|> AuditAttributes
-    OpportunityBase ..|> BPFAttributes
     
     QuoteBase ..|> SystemAttributes
     QuoteBase ..|> OwnershipAttributes
     QuoteBase ..|> StateManagementAttributes
-    QuoteBase ..|> AuditAttributes
     
     SalesOrderBase ..|> SystemAttributes
     SalesOrderBase ..|> OwnershipAttributes
     SalesOrderBase ..|> StateManagementAttributes
-    SalesOrderBase ..|> AuditAttributes
     
     InvoiceBase ..|> SystemAttributes
     InvoiceBase ..|> OwnershipAttributes
     InvoiceBase ..|> StateManagementAttributes
-    InvoiceBase ..|> AuditAttributes
-```
-
-### 2.2 StateCode & StatusCode Structure
-
-```mermaid
-classDiagram
-    class StateStatusModel {
-        <<enumeration>>
-    }
-    
-    note for StateStatusModel "STATE CODE & STATUS CODE ARCHITECTURE"
-    
-    class LeadStateMachine {
-        <<enumeration>>
-        +STATE_OPEN = 0
-        +STATE_QUALIFIED = 1
-        +STATE_DISQUALIFIED = 2
-    }
-    
-    class LeadStatusCodes {
-        <<enumeration>>
-        +NEW = 1
-        +ATTEMPTED_CONTACT = 2
-        +CONTACTED = 3
-        +OPEN = 4
-        +QUALIFIED = 5
-        +DISQUALIFIED = 6
-        +LOST = 7
-        +CANNOT_CONTACT = 8
-        +NOT_INTERESTED = 9
-    }
-    
-    class OpportunityStateMachine {
-        <<enumeration>>
-        +STATE_OPEN = 0
-        +STATE_WON = 1
-        +STATE_LOST = 2
-    }
-    
-    class OpportunityStatusCodes {
-        <<enumeration>>
-        +NEW = 1
-        +IN_PROGRESS = 2
-        +ON_HOLD = 3
-        +WON = 4
-        +LOST = 5
-        +CANCELLED = 6
-        +OUT_SOLD = 7
-    }
-    
-    class SalesOrderStateMachine {
-        <<enumeration>>
-        +STATE_ACTIVE = 0
-        +STATE_FULFILLED = 1
-        +STATE_INVOICED = 2
-        +STATE_PAID = 3
-        +STATE_CANCELLED = 4
-    }
-    
-    class InvoiceStateMachine {
-        <<enumeration>>
-        +STATE_ACTIVE = 0
-        +STATE_PAID = 1
-        +STATE_CANCELLED = 2
-    }
-    
-    StateStatusModel --> LeadStateMachine
-    StateStatusModel --> LeadStatusCodes
-    StateStatusModel --> OpportunityStateMachine
-    StateStatusModel --> OpportunityStatusCodes
-    StateStatusModel --> SalesOrderStateMachine
-    StateStatusModel --> InvoiceStateMachine
 ```
 
 ---
@@ -1010,27 +813,18 @@ flowchart TD
     classDef entity fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
     classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px
     classDef process fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef output fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    
-    %% ==================== NODES ====================
     
     START(("Start"))
     
-    subgraph LEAD_QUALIFICATION["Lead Qualification"]
-        direction LR
-        L1["Lead Created"]
-        L2{"Qualify?"}
-        L3["Lead Qualified"]
-        L4["Lead Disqualified"]
-    end
+    L1["Lead Created"]
+    L2{"Qualify?"}
+    L3["Lead Qualified"]
+    L4["Lead Disqualified"]
     
-    subgraph OPPORTUNITY_PROCESS["Opportunity Management"]
-        direction LR
-        O1["Opportunity Created"]
-        O2["Develop Proposal"]
-        O3["Present Solution"]
-        O4{"Close Opportunity"}
-    end
+    O1["Opportunity Created"]
+    O2["Develop Proposal"]
+    O3["Present Solution"]
+    O4{"Close Opportunity"}
     
     QUOTE_CREATE["Quote Created"]
     QUOTE_REVISE["Quote Revised"]
@@ -1048,15 +842,13 @@ flowchart TD
     CLOSE["Close / Win"]
     LOST["Lost / No Sale"]
     
-    %% ==================== EDGES ====================
-    
+    %% Transitions
     START --> L1
     L1 --> L2
     L2 -->|Yes| L3
     L2 -->|No| L4
     
     L3 --> O1
-    
     O1 --> O2
     O2 --> O3
     O3 --> O4
@@ -1073,17 +865,14 @@ flowchart TD
     
     ORDER_CREATE --> ORDER_FULFILL
     ORDER_CREATE --> ORDER_CANCEL
-    
     ORDER_FULFILL --> INVOICE_CREATE
     ORDER_CANCEL --> LOST
     
     INVOICE_CREATE --> INVOICE_PAID
     INVOICE_CREATE --> INVOICE_CANCEL
-    
     INVOICE_PAID --> CLOSE
     INVOICE_CANCEL --> LOST
     
-    %% ==================== CLASSIFICATIONS ====================
     class START,L1,L3,L4,CLOSE,LOST entity
     class L2,O4 decision
     class O1,O2,O3,QUOTE_CREATE,ORDER_CREATE,INVOICE_CREATE process
@@ -1094,28 +883,25 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    %% ==================== LEAD STATE TRANSITIONS ====================
+    %% LEAD STATE TRANSITIONS
     
     subgraph OPEN["State: OPEN (0)"]
-        direction TB
         NEW["New (1)"]
         ATTEMPTED["Attempted to Contact (2)"]
         CONTACTED["Contacted (3)"]
         OPEN_LEAD["Open (4)"]
     end
     
-    subgraph QUALIFIED["State: QUALIFIED (1)"]
-        direction TB
-        QUALIFIED_LEAD["Qualified (5)"]
-        DISQUALIFIED["Disqualified (6)"]
-    end
+    QUALIFIED_LEAD["Qualified (5)"]
+    DISQUALIFIED["Disqualified (6)"]
     
     subgraph DISQUALIFIED_STATE["State: DISQUALIFIED (2)"]
-        direction TB
         LOST["Lost (7)"]
         CANNOT_CONTACT["Cannot Contact (8)"]
         NOT_INTERESTED["Not Interested (9)"]
     end
+    
+    OPPORTUNITY("Opportunity")
     
     %% Transitions
     NEW --> ATTEMPTED
@@ -1132,7 +918,7 @@ flowchart TD
     CONTACTED --> DISQUALIFIED
     OPEN_LEAD --> DISQUALIFIED
     
-    QUALIFIED_LEAD -->|Convert| OPPORTUNITY("→ Opportunity")
+    QUALIFIED_LEAD -->|Convert| OPPORTUNITY
     DISQUALIFIED --> LOST
     DISQUALIFIED --> CANNOT_CONTACT
     DISQUALIFIED --> NOT_INTERESTED
@@ -1148,10 +934,9 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    %% ==================== OPPORTUNITY STATE TRANSITIONS ====================
+    %% OPPORTUNITY STATE TRANSITIONS
     
     subgraph OPEN_OPP["State: OPEN (0)"]
-        direction LR
         NEW_OPP["New (1)"]
         IN_PROGRESS["In Progress (2)"]
         ON_HOLD["On Hold (3)"]
@@ -1161,11 +946,13 @@ flowchart TD
     WON_STATUS["Won (4)"]
     
     subgraph LOST_OPP["State: LOST (2)"]
-        direction LR
         LOST_OPP_STATUS["Lost (5)"]
         CANCELLED["Cancelled (6)"]
         OUT_SOLD["Out-Sold (7)"]
     end
+    
+    ORDER["Sales Order"]
+    LEAD["Lead"]
     
     %% Transitions
     NEW_OPP --> IN_PROGRESS
@@ -1184,8 +971,8 @@ flowchart TD
     CANCELLED --> LOST_OPP
     OUT_SOLD --> LOST_OPP
     
-    WON_STATUS -->|"Create Order"| ORDER["→ Sales Order"]
-    LOST_OPP_STATUS -->|"Create"| LEAD["← Lead"]
+    WON_STATUS -->|Create Order| ORDER
+    LOST_OPP_STATUS -->|Create| LEAD
     
     class NEW_OPP,IN_PROGRESS,ON_HOLD fill:#e3f2fd,stroke:#1565c0
     class WON_STATUS,WON fill:#c8e6c9,stroke:#2e7d32
@@ -1200,64 +987,59 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    %% ==================== EXTERNAL ENTITIES ====================
+    %% EXTERNAL ENTITIES
     subgraph EXTERNAL["User Interactions"]
         UI["CRM UI / Power Apps"]
         API["Web API / Services"]
-        INTEGRATION["External Integration"]
     end
     
-    %% ==================== APPLICATION LAYER ====================
+    %% APPLICATION LAYER
     subgraph APPLICATION["Application Layer"]
         VALIDATE["Data Validation"]
         SECURITY["Security Check"]
         WORKFLOW["Workflow Engine"]
         PLUGIN["Plugin Pipeline"]
-        BPF["Business Process Flow"]
     end
     
-    %% ==================== DATA LAYER ====================
+    %% DATA LAYER
     subgraph DATA["Data Layer"]
         BASE["Base Tables"]
         VIEWS["Logical Views"]
         AUDIT["Audit Tables"]
     end
     
-    %% ==================== ENTITY OPERATIONS ====================
-    
     %% CREATE FLOW
     CREATE[("Create Record")]
-    VALIDATE -->|"Validate Required Fields"| SECURITY
+    VALIDATE -->|"Validate"| SECURITY
     SECURITY -->|"Check Permissions"| WORKFLOW
-    WORKFLOW -->|"Run Pre-Operation Plugins"| PLUGIN
-    PLUGIN -->|"Execute BPF"| BPF
-    BPF -->|"Insert to Base Table"| BASE
-    BASE -->|"Create Audit Record"| AUDIT
+    WORKFLOW --> PLUGIN
+    PLUGIN -->|"Insert"| BASE
+    BASE -->|"Create Audit"| AUDIT
     BASE -->|"Update Views"| VIEWS
     
     %% UPDATE FLOW
     UPDATE[("Update Record")]
-    VALIDATE_UPDATE["Validate Changes"]
     CONCURRENCY["Check VersionNumber"]
-    VALIDATE_UPDATE -->|"Validate Business Rules"| CONCURRENCY
-    CONCURRENCY -->|"Optimistic Lock Check"| WORKFLOW
-    WORKFLOW -->|"Run Pre-Update Plugins"| PLUGIN
-    PLUGIN -->|"Update Base Table"| BASE
-    BASE -->|"Create Audit Record"| AUDIT
+    VALIDATE_UPDATE["Validate Changes"]
+    VALIDATE_UPDATE --> CONCURRENCY
+    CONCURRENCY --> WORKFLOW
+    WORKFLOW --> PLUGIN
+    PLUGIN -->|"Update"| BASE
+    BASE -->|"Update Audit"| AUDIT
     
     %% RETRIEVE FLOW
     RETRIEVE[("Retrieve Record")]
-    RETRIEVE -->|"Query Logical View"| VIEWS
-    VIEWS -->|"Apply Security Filter"| SECURITY
-    SECURITY -->|"Return Filtered Data"| UI
+    RETRIEVE -->|"Query"| VIEWS
+    VIEWS -->|"Apply Filter"| SECURITY
+    SECURITY -->|"Return Data"| UI
     
     %% DELETE FLOW
     DELETE[("Delete Record")]
     DELETE -->|"Check Dependencies"| WORKFLOW
     WORKFLOW -->|"Cascade Delete"| BASE
-    BASE -->|"Create Delete Audit"| AUDIT
+    BASE -->|"Delete Audit"| AUDIT
     
-    %% Flows from external
+    %% External connections
     UI --> CREATE
     UI --> UPDATE
     UI --> RETRIEVE
@@ -1267,16 +1049,11 @@ flowchart LR
     API --> UPDATE
     API --> RETRIEVE
     
-    INTEGRATION --> CREATE
-    INTEGRATION --> UPDATE
-    
-    %% Output to external
     VIEWS --> UI
     VIEWS --> API
-    VIEWS --> INTEGRATION
     
-    class UI,API,INTEGRATION fill:#e8eaf6,stroke:#3f51b5
-    class VALIDATE,SECURITY,WORKFLOW,PLUGIN,BPF fill:#fff8e1,stroke:#ff8f00
+    class UI,API fill:#e8eaf6,stroke:#3f51b5
+    class VALIDATE,SECURITY,WORKFLOW,PLUGIN fill:#fff8e1,stroke:#ff8f00
     class BASE,VIEWS,AUDIT fill:#e8f5e9,stroke:#2e7d32
 ```
 
@@ -1284,31 +1061,24 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    %% ==================== RECORD LIFECYCLE ====================
+    START(("Record Creation"))
     
-    START(("Record<br/>Creation"))
-    
-    PRE_CREATE["Pre-Create<br/>Plugins"]
-    POST_CREATE["Post-Create<br/>Plugins"]
-    VALIDATE_CREATE["Validate<br/>Required Fields"]
-    
-    ACTIVE["Active<br/>Record"]
-    
-    PRE_UPDATE["Pre-Update<br/>Plugins"]
-    POST_UPDATE["Post-Update<br/>Plugins"]
-    VALIDATE_UPDATE["Validate<br/>Business Rules"]
-    
-    STATE_CHANGE["State/Status<br/>Change"]
-    POST_STATE["Post-State<br/>Plugins"]
-    
-    DEACTIVATE["Deactivate<br/>Record"]
-    PRE_DELETE["Pre-Delete<br/>Plugins"]
-    POST_DELETE["Post-Delete<br/>Plugins"]
+    PRE_CREATE["Pre-Create Plugins"]
+    POST_CREATE["Post-Create Plugins"]
+    VALIDATE_CREATE["Validate Required Fields"]
+    ACTIVE["Active Record"]
+    PRE_UPDATE["Pre-Update Plugins"]
+    POST_UPDATE["Post-Update Plugins"]
+    VALIDATE_UPDATE["Validate Business Rules"]
+    STATE_CHANGE["State/Status Change"]
+    POST_STATE["Post-State Plugins"]
+    DEACTIVATE["Deactivate Record"]
+    PRE_DELETE["Pre-Delete Plugins"]
     HARD_DELETE["Hard Delete"]
-    
-    AUDIT_CREATE["Create Audit<br/>Record"]
-    AUDIT_UPDATE["Update Audit<br/>Record"]
-    AUDIT_DELETE["Delete Audit<br/>Record"]
+    POST_DELETE["Post-Delete Plugins"]
+    AUDIT_CREATE["Create Audit Record"]
+    AUDIT_UPDATE["Update Audit Record"]
+    AUDIT_DELETE["Delete Audit Record"]
     
     %% Connections
     START --> VALIDATE_CREATE
@@ -1347,129 +1117,73 @@ flowchart TD
 
 ```mermaid
 flowchart TB
-    %% ==================== SECURITY ARCHITECTURE ====================
+    ORG["Organization"]
+    BU1["Root Business Unit"]
+    BU2["Sales BU"]
+    BU3["Marketing BU"]
+    R1["Salesperson"]
+    R2["Sales Manager"]
+    R3["Sales VP"]
+    T1["Sales Team"]
+    T2["Enterprise Team"]
+    U1["User A"]
+    U2["User B"]
+    U3["User C"]
     
-    subgraph ORG["Organization Level"]
-        ORG1["Organization"]
-    end
+    ORG --> BU1
+    BU1 --> BU2
+    BU1 --> BU3
     
-    subgraph BU_LEVEL["Business Unit Level"]
-        BU1["Root Business Unit"]
-        BU2["Sales BU"]
-        BU3["Marketing BU"]
-        BU4["Service BU"]
-    end
+    BU2 --> R1
+    BU2 --> R2
+    BU2 --> R3
     
-    subgraph SECURITY_ROLES["Security Roles"]
-        R1["Salesperson"]
-        R2["Sales Manager"]
-        R3["Sales VP"]
-        R4["Marketing Manager"]
-        R5["System Admin"]
-    end
+    R1 --> T1
+    R2 --> T2
     
-    subgraph TEAMS["Teams"]
-        T1["Sales Team North"]
-        T2["Sales Team South"]
-        T3["Enterprise Team"]
-    end
+    R1 --> U1
+    R2 --> U1
+    R2 --> U2
+    R3 --> U3
     
-    subgraph USERS["Users"]
-        U1["User A"]
-        U2["User B"]
-        U3["User C"]
-    end
+    U1 --> T1
+    U2 --> T1
+    U2 --> T2
+    U3 --> T2
     
-    subgraph RECORDS["Record Access"]
-        RA1["Record Level<br/>Security"]
-        RA2["Field Level<br/>Security"]
-        RA3["Row Level<br/>Security"]
-    end
-    
-    %% Hierarchy connections
-    ORG1 -->|contains| BU1
-    BU1 -->|contains| BU2
-    BU1 -->|contains| BU3
-    BU1 -->|contains| BU4
-    
-    %% Role assignments
-    BU2 -->|assigns| R1
-    BU2 -->|assigns| R2
-    BU2 -->|assigns| R3
-    BU3 -->|assigns| R4
-    BU1 -->|assigns| R5
-    
-    %% Team memberships
-    R1 -->|creates| T1
-    R1 -->|creates| T2
-    R2 -->|creates| T3
-    
-    %% User assignments
-    R1 -->|assigned to| U1
-    R2 -->|assigned to| U2
-    R3 -->|assigned to| U3
-    
-    U1 -->|member of| T1
-    U2 -->|member of| T1
-    U2 -->|member of| T2
-    U3 -->|member of| T3
-    
-    %% Record access
-    USERS -->|"access via"| RA3
-    TEAMS -->|"access via"| RA3
-    ROLES -->|"defines"| RA2
-    
-    class ORG1,BU1,BU2,BU3,BU4 fill:#bbdefb,stroke:#1565c0
-    class R1,R2,R3,R4,R5 fill:#c8e6c9,stroke:#2e7d32
-    class T1,T2,T3 fill:#fff9c4,stroke:#f9a825
+    class ORG,BU1,BU2,BU3 fill:#bbdefb,stroke:#1565c0
+    class R1,R2,R3 fill:#c8e6c9,stroke:#2e7d32
+    class T1,T2 fill:#fff9c4,stroke:#f9a825
     class U1,U2,U3 fill:#f8bbd0,stroke:#c2185b
-    class RA1,RA2,RA3 fill:#e1bee7,stroke:#7b1fa2
 ```
 
 ### 5.2 Record-Level Security Flow
 
 ```mermaid
 flowchart TD
-    %% ==================== RECORD ACCESS DECISION ====================
+    REQUEST["Record Access Request"]
     
-    REQUEST["Record Access<br/>Request"]
-    
-    %% Ownership Check
-    OWNER_CHECK{"User is<br/>Owner?"}
+    OWNER_CHECK{"User is Owner?"}
     OWNER_YES["Grant Access"]
-    
-    %% BU Check
-    BU_CHECK{"User's BU<br/>matches?"}
+    BU_CHECK{"User's BU matches?"}
     BU_YES["Grant Access"]
-    
-    %% Team Check
-    TEAM_CHECK{"User in Team<br/>with Access?"}
+    TEAM_CHECK{"User in Team with Access?"}
     TEAM_YES["Grant Access"]
-    
-    %% Role Check
-    ROLE_CHECK{"Role has<br/>Privilege?"}
+    ROLE_CHECK{"Role has Privilege?"}
     ROLE_YES["Grant Access"]
-    
-    %% Share Check
-    SHARE_CHECK{"Record Shared<br/>to User/Team?"}
+    SHARE_CHECK{"Record Shared to User/Team?"}
     SHARE_YES["Grant Access"]
-    
     DENY["Deny Access"]
     
-    %% Flow
     REQUEST --> OWNER_CHECK
     OWNER_CHECK -->|Yes| OWNER_YES
     OWNER_CHECK -->|No| BU_CHECK
-    
     BU_CHECK -->|Yes| BU_YES
     BU_CHECK -->|No| TEAM_CHECK
-    
     TEAM_CHECK -->|Yes| TEAM_YES
     TEAM_CHECK -->|No| ROLE_CHECK
-    
     ROLE_CHECK -->|Yes| ROLE_YES
     ROLE_CHECK -->|No| SHARE_CHECK
-    
     SHARE_CHECK -->|Yes| SHARE_YES
     SHARE_CHECK -->|No| DENY
     
@@ -1486,61 +1200,37 @@ flowchart TD
 
 ```mermaid
 flowchart TB
-    %% ==================== ACTIVITY RELATIONSHIPS ====================
+    APPT["Appointment"]
+    EMAIL["Email"]
+    PHONE["Phone Call"]
+    TASK["Task"]
     
-    subgraph ACTIVITIES["Activities"]
-        APPT["Appointment"]
-        EMAIL["Email"]
-        PHONE["Phone Call"]
-        TASK["Task"]
-        LETTER["Letter"]
-        FAX["Fax"]
-        SOCIAL["Social Activity"]
-        SERVICE["Service Appointment"]
-    end
+    SENDER["Sender"]
+    TO["To Recipient"]
+    CC["CC"]
+    REQUIRED["Required Attendee"]
+    ORGANIZER["Organizer"]
     
-    subgraph PARTICIPANTS["Activity Parties"]
-        SENDER["Sender (1)"]
-        TO["To Recipient (2)"]
-        CC["CC (3)"]
-        BCC["BCC (4)"]
-        REQUIRED["Required Attendee (5)"]
-        OPTIONAL["Optional Attendee (6)"]
-        ORGANIZER["Organizer (7)"]
-        REGARDING["Regarding (8)"]
-    end
+    ACCOUNT_ACT["Account"]
+    CONTACT_ACT["Contact"]
+    LEAD_ACT["Lead"]
+    OPP_ACT["Opportunity"]
     
-    subgraph REGARDING_ENTITIES["Regarding Entities"]
-        ACCOUNT_ACT["Account"]
-        CONTACT_ACT["Contact"]
-        LEAD_ACT["Lead"]
-        OPP_ACT["Opportunity"]
-        CASE_ACT["Case"]
-        QUOTE_ACT["Quote"]
-        ORDER_ACT["Sales Order"]
-        INVOICE_ACT["Invoice"]
-    end
+    APPT --> SENDER
+    APPT --> TO
+    APPT --> CC
+    APPT --> REQUIRED
+    APPT --> ORGANIZER
     
-    %% Activity to Participant
-    APPT -->|has| SENDER
-    APPT -->|has| TO
-    APPT -->|has| CC
-    APPT -->|has| REQUIRED
-    APPT -->|has| OPTIONAL
-    APPT -->|has| ORGANIZER
+    EMAIL --> SENDER
+    EMAIL --> TO
+    EMAIL --> CC
     
-    EMAIL -->|from| SENDER
-    EMAIL -->|to| TO
-    EMAIL -->|cc| CC
-    EMAIL -->|bcc| BCC
+    PHONE --> SENDER
+    PHONE --> TO
     
-    PHONE -->|from| SENDER
-    PHONE -->|to| TO
+    TASK --> SENDER
     
-    TASK -->|assigned_to| REGARDING
-    TASK -->|has| SENDER
-    
-    %% Participant to Regarding
     SENDER --> ACCOUNT_ACT
     SENDER --> CONTACT_ACT
     SENDER --> LEAD_ACT
@@ -1550,59 +1240,41 @@ flowchart TB
     TO --> LEAD_ACT
     TO --> OPP_ACT
     
-    REGARDING --> ACCOUNT_ACT
-    REGARDING --> CONTACT_ACT
-    REGARDING --> LEAD_ACT
-    REGARDING --> OPP_ACT
-    REGARDING --> CASE_ACT
-    REGARDING --> QUOTE_ACT
-    REGARDING --> ORDER_ACT
-    REGARDING --> INVOICE_ACT
-    
-    class APPT,EMAIL,PHONE,TASK,LETTER,FAX,SOCIAL,SERVICE fill:#e3f2fd,stroke:#1565c0
-    class SENDER,TO,CC,BCC,REQUIRED,OPTIONAL,ORGANIZER,REGARDING fill:#fff8e1,stroke:#ff8f00
-    class ACCOUNT_ACT,CONTACT_ACT,LEAD_ACT,OPP_ACT,CASE_ACT,QUOTE_ACT,ORDER_ACT,INVOICE_ACT fill:#c8e6c9,stroke:#2e7d32
+    class APPT,EMAIL,PHONE,TASK fill:#e3f2fd,stroke:#1565c0
+    class SENDER,TO,CC,REQUIRED,ORGANIZER fill:#fff8e1,stroke:#ff8f00
+    class ACCOUNT_ACT,CONTACT_ACT,LEAD_ACT,OPP_ACT fill:#c8e6c9,stroke:#2e7d32
 ```
 
 ### 6.2 Timeline Integration Flow
 
 ```mermaid
 flowchart LR
-    %% ==================== TIMELINE ARCHITECTION ====================
-    
-    ACCOUNT_TL["Account<br/>Timeline"]
-    CONTACT_TL["Contact<br/>Timeline"]
-    LEAD_TL["Lead<br/>Timeline"]
-    OPPORTUNITY_TL["Opportunity<br/>Timeline"]
-    
-    TIMELINE_AGG["Timeline<br/>Aggregation"]
-    
-    ACTIVITY_STREAM["Activity<br/>Stream"]
-    POSTS["Posts &<br/>Notes"]
+    ACCOUNT_TL["Account Timeline"]
+    CONTACT_TL["Contact Timeline"]
+    LEAD_TL["Lead Timeline"]
+    OPPORTUNITY_TL["Opportunity Timeline"]
+    TIMELINE_AGG["Timeline Aggregation"]
+    ACTIVITY_STREAM["Activity Stream"]
+    POSTS["Posts and Notes"]
     DOCUMENTS["Documents"]
-    CONNECTORS["Connectors"]
+    TIMELINE_VIEW["Timeline View"]
     
-    TIMELINE_VIEW["Timeline<br/>View Control"]
+    ACCOUNT_TL --> TIMELINE_AGG
+    CONTACT_TL --> TIMELINE_AGG
+    LEAD_TL --> TIMELINE_AGG
+    OPPORTUNITY_TL --> TIMELINE_AGG
     
-    %% Relationships
-    ACCOUNT_TL -->|"regarding<br/>AccountId"| TIMELINE_AGG
-    CONTACT_TL -->|"regarding<br/>ContactId"| TIMELINE_AGG
-    LEAD_TL -->|"regarding<br/>LeadId"| TIMELINE_AGG
-    OPPORTUNITY_TL -->|"regarding<br/>OpportunityId"| TIMELINE_AGG
+    TIMELINE_AGG --> ACTIVITY_STREAM
+    TIMELINE_AGG --> POSTS
+    TIMELINE_AGG --> DOCUMENTS
     
-    TIMELINE_AGG -->|"sort by<br/>date"| ACTIVITY_STREAM
-    TIMELINE_AGG -->|"sort by<br/>date"| POSTS
-    TIMELINE_AGG -->|"sort by<br/>date"| DOCUMENTS
-    TIMELINE_AGG -->|"sort by<br/>date"| CONNECTORS
-    
-    ACTIVITY_STREAM -->|"display"| TIMELINE_VIEW
-    POSTS -->|"display"| TIMELINE_VIEW
-    DOCUMENTS -->|"display"| TIMELINE_VIEW
-    CONNECTORS -->|"display"| TIMELINE_VIEW
+    ACTIVITY_STREAM --> TIMELINE_VIEW
+    POSTS --> TIMELINE_VIEW
+    DOCUMENTS --> TIMELINE_VIEW
     
     class ACCOUNT_TL,CONTACT_TL,LEAD_TL,OPPORTUNITY_TL fill:#bbdefb,stroke:#1565c0
     class TIMELINE_AGG fill:#fff9c4,stroke:#f9a825
-    class ACTIVITY_STREAM,POSTS,DOCUMENTS,CONNECTORS fill:#c8e6c9,stroke:#2e7d32
+    class ACTIVITY_STREAM,POSTS,DOCUMENTS fill:#c8e6c9,stroke:#2e7d32
     class TIMELINE_VIEW fill:#f8bbd0,stroke:#c2185b
 ```
 
@@ -1614,85 +1286,57 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    %% ==================== PRICING ENGINE ====================
+    START(("Pricing Calculation"))
     
-    START(("Pricing<br/>Calculation"))
-    
-    %% Product Pricing
-    PRODUCT["Product<br/>Selection"]
-    PRICELIST["Price List<br/>Lookup"]
-    GET_PRICE["Get Unit<br/>Price"]
-    
-    %% Line Item
-    LINE_QTY["Enter<br/>Quantity"]
+    PRODUCT["Product Selection"]
+    PRICELIST["Price List Lookup"]
+    GET_PRICE["Get Unit Price"]
+    LINE_QTY["Enter Quantity"]
     LINE_PRICE["Unit Price"]
-    LINE_CALC["Calculate<br/>Line Amount"]
-    LINE_AMOUNT["Line Amount<br/>(Qty × Price)"]
-    
-    %% Discounts
-    LINE_DISCOUNT["Line Discount<br/>%"]
-    DISCOUNT_CALC["Calculate<br/>Discount"]
-    DISCOUNT_AMT["Discount<br/>Amount"]
-    NET_LINE["Net Line<br/>(Amount - Discount)"]
-    
-    %% Extended Pricing
-    TOTAL_LINES["Sum All<br/>Lines"]
+    LINE_CALC["Calculate Line Amount"]
+    LINE_AMOUNT["Line Amount"]
+    LINE_DISCOUNT["Line Discount"]
+    DISCOUNT_CALC["Calculate Discount"]
+    DISCOUNT_AMT["Discount Amount"]
+    NET_LINE["Net Line Amount"]
+    TOTAL_LINES["Sum All Lines"]
     SUBTOTAL["Subtotal"]
-    
-    ORDER_DISCOUNT["Order Discount<br/>% or Amount"]
-    ORDER_DISCOUNT_CALC["Calculate Order<br/>Discount"]
-    ORDER_DISCOUNT_AMT["Discount Amount"]
+    ORDER_DISCOUNT["Order Discount"]
+    ORDER_DISCOUNT_AMT["Order Discount Amount"]
     NET_SUBTOTAL["Net Subtotal"]
-    
-    %% Additional Costs
-    FREIGHT["Freight<br/>Amount"]
-    TAX_CALC["Calculate<br/>Tax"]
+    FREIGHT["Freight Amount"]
+    TAX_CALC["Calculate Tax"]
     TAX_AMT["Tax Amount"]
-    
-    %% Final Total
-    TOTAL_CALC["Calculate<br/>Total"]
+    TOTAL_CALC["Calculate Total"]
     TOTAL_AMOUNT["Total Amount"]
+    TRANSACTION_CURRENCY["Transaction Currency"]
+    EXCHANGE_RATE["Exchange Rate"]
+    BASE_AMOUNT["Base Currency Amount"]
     
-    %% Base Currency
-    TRANSACTION_CURRENCY["Transaction<br/>Currency"]
-    EXCHANGE_RATE["Exchange<br/>Rate"]
-    CONVERT["Convert to<br/>Base Currency"]
-    BASE_AMOUNT["Base Currency<br/>Amount"]
-    
-    %% Connections
     START --> PRODUCT
     PRODUCT --> PRICELIST
     PRICELIST --> GET_PRICE
-    
     GET_PRICE --> LINE_PRICE
     LINE_QTY --> LINE_CALC
     LINE_PRICE --> LINE_CALC
     LINE_CALC --> LINE_AMOUNT
-    
     LINE_AMOUNT --> LINE_DISCOUNT
     LINE_DISCOUNT --> DISCOUNT_CALC
     DISCOUNT_CALC --> DISCOUNT_AMT
     DISCOUNT_AMT --> NET_LINE
-    
     NET_LINE --> TOTAL_LINES
     TOTAL_LINES --> SUBTOTAL
-    
     SUBTOTAL --> ORDER_DISCOUNT
-    ORDER_DISCOUNT --> ORDER_DISCOUNT_CALC
-    ORDER_DISCOUNT_CALC --> ORDER_DISCOUNT_AMT
+    ORDER_DISCOUNT --> ORDER_DISCOUNT_AMT
     ORDER_DISCOUNT_AMT --> NET_SUBTOTAL
-    
     NET_SUBTOTAL --> FREIGHT
     FREIGHT --> TAX_CALC
     TAX_CALC --> TAX_AMT
-    
     TAX_AMT --> TOTAL_CALC
     TOTAL_CALC --> TOTAL_AMOUNT
-    
     TOTAL_AMOUNT --> TRANSACTION_CURRENCY
     TRANSACTION_CURRENCY --> EXCHANGE_RATE
-    EXCHANGE_RATE --> CONVERT
-    CONVERT --> BASE_AMOUNT
+    EXCHANGE_RATE --> BASE_AMOUNT
     
     class START,TOTAL_AMOUNT,BASE_AMOUNT fill:#e3f2fd,stroke:#1565c0
     class PRODUCT,PRICELIST,GET_PRICE fill:#c8e6c9,stroke:#2e7d32
@@ -1701,98 +1345,26 @@ flowchart TD
     class SUBTOTAL,NET_SUBTOTAL fill:#f3e5f5,stroke:#7b1fa2
 ```
 
-### 7.2 Rollup Calculation Flow
-
-```mermaid
-flowchart TD
-    %% ==================== OPPORTUNITY ROLLUP ====================
-    
-    OPP_HEADER["Opportunity<br/>Header"]
-    
-    subgraph LINE_ITEMS["Opportunity Products"]
-        LP1["Line Item 1"]
-        LP2["Line Item 2"]
-        LP3["Line Item N"]
-    end
-    
-    CALCULATE["Calculate<br/>Totals"]
-    EXTENDED_AMT["Extended Amount<br/>(Qty × Price)"]
-    LINE_DISC["Line Discount"]
-    LINE_TAX["Tax"]
-    
-    AGGREGATE["Aggregate to<br/>Opportunity"]
-    
-    TOTAL_LINE_AMT["Total Line<br/>Amount"]
-    TOTAL_DISC["Total Discount"]
-    TOTAL_TAX["Total Tax"]
-    
-    OTHER_CHARGES["Freight &<br/>Other Charges"]
-    
-    OPP_TOTAL["Opportunity<br/>Total Amount"]
-    
-    OPP_UPDATE["Update<br/>Opportunity"]
-    
-    OPPORTUNITY["Opportunity<br/>Entity"]
-    
-    %% Flow
-    OPP_HEADER --> LINE_ITEMS
-    
-    LP1 --> CALCULATE
-    LP2 --> CALCULATE
-    LP3 --> CALCULATE
-    
-    CALCULATE --> EXTENDED_AMT
-    EXTENDED_AMT --> LINE_DISC
-    LINE_DISC --> LINE_TAX
-    
-    LINE_ITEMS -->|"all lines"| AGGREGATE
-    AGGREGATE -->|"sum| TOTAL_LINE_AMT
-    AGGREGATE -->|"sum| TOTAL_DISC
-    AGGREGATE -->|"sum| TOTAL_TAX
-    
-    TOTAL_LINE_AMT --> OTHER_CHARGES
-    TOTAL_DISC --> OTHER_CHARGES
-    TOTAL_TAX --> OTHER_CHARGES
-    
-    OTHER_CHARGES --> OPP_TOTAL
-    
-    OPP_TOTAL --> OPP_UPDATE
-    OPP_UPDATE --> OPPORTUNITY
-    
-    class OPP_HEADER,OPPORTUNITY fill:#e3f2fd,stroke:#1565c0
-    class LP1,LP2,LP3,CALCULATE fill:#c8e6c9,stroke:#2e7d32
-    class TOTAL_LINE_AMT,TOTAL_DISC,TOTAL_TAX,OPP_TOTAL fill:#fff8e1,stroke:#ff8f00
-    class AGGREGATE,OPP_UPDATE fill:#fce4ec,stroke:#c2185b
-```
-
-### 7.3 Multi-Currency Conversion Flow
+### 7.2 Multi-Currency Conversion Flow
 
 ```mermaid
 flowchart LR
-    %% ==================== CURRENCY CONVERSION ====================
-    
-    TRANSACTION["Transaction<br/>Currency"]
-    TRANSACTION_AMT["Amount:<br/>10,000 EUR"]
-    
-    EXCHANGE_RATE["Exchange Rate<br/>Table Lookup"]
+    TRANSACTION["Transaction Currency"]
+    TRANSACTION_AMT["Amount: 10,000 EUR"]
+    EXCHANGE_RATE["Exchange Rate Table"]
     RATE_VALUE["Rate: 1.09"]
+    BASE_CURRENCY["Base Currency USD"]
+    BASE_AMOUNT["Base Amount: 10,900 USD"]
+    HISTORICAL["Historical Rate Storage"]
+    REPORTING["Reporting in Base Currency"]
     
-    BASE_CURRENCY["Base Currency<br/>USD"]
-    BASE_AMOUNT["Base Amount:<br/>10,900 USD"]
-    
-    HISTORICAL["Historical Rate<br/>Storage"]
-    
-    REPORTING["Reporting<br/>In Base Currency"]
-    
-    %% Flow
-    TRANSACTION -->|"user enters"| TRANSACTION_AMT
-    TRANSACTION_AMT -->|"gets| EXCHANGE_RATE
-    EXCHANGE_RATE -->|"returns| RATE_VALUE
-    RATE_VALUE -->|"applies| BASE_CURRENCY
-    BASE_CURRENCY -->|"calculates| BASE_AMOUNT
-    
-    RATE_VALUE -->|"stores for| HISTORICAL
-    HISTORICAL -->|"used for| REPORTING
+    TRANSACTION --> TRANSACTION_AMT
+    TRANSACTION_AMT --> EXCHANGE_RATE
+    EXCHANGE_RATE --> RATE_VALUE
+    RATE_VALUE --> BASE_CURRENCY
+    BASE_CURRENCY --> BASE_AMOUNT
+    RATE_VALUE --> HISTORICAL
+    HISTORICAL --> REPORTING
     
     class TRANSACTION,TRANSACTION_AMT fill:#e3f2fd,stroke:#1565c0
     class EXCHANGE_RATE,RATE_VALUE fill:#c8e6c9,stroke:#2e7d32
@@ -1802,5 +1374,5 @@ flowchart LR
 
 ---
 
-*Document generated by Senior Microsoft Dynamics 365 CRM Solution Architect & Dataverse Database Expert*
-*All diagrams follow Enterprise Dynamics 365 / Dataverse architecture patterns*
+*Document generated for Microsoft Dynamics 365 CRM Sales Module*
+*All diagrams follow standard Mermaid syntax and Enterprise Dynamics 365 / Dataverse architecture patterns*
